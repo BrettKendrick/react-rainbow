@@ -1,71 +1,95 @@
-# Getting Started with Create React App
+# ACTIVITY: RR-react-a-mole
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+In this activity, you will develop a React-based Whac-a-Mole game from scratch. You will use all of the concepts learned in this module.
 
-## Available Scripts
+You will:
 
-In the project directory, you can run:
+- Generate components dynamically.
+- Use state to track the score and mole status.
+- Utilize the useEffect hook to govern the mole (component) lifecycle.
 
-### `npm start`
+## Setup
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Instantiate a new React app with create-react-app. We will call this project react_a_mole.
+Windows Users: As of Dec. 2021, there is an issue with create-react-app in Windows. If you run npm start with a React app in Git Bash, there will be a path error due to the way Git Bash handles paths. To get around this, you can either use VSCode's terminal, or once you run npm start, open package.json, make a minor change then delete that chance, and save. This will reload the application without errors.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. Open the generated project and remove the boilerplate code.
+3. You can download image assets at: [https://github.com/HackerUSA-CE/RR-React-A-Mole-Images]
+4. Once the setup is complete, pause and consider all the elements needed for this application. Because we will be dealing with a complex state and unique, dynamically generated components, we want to plan and understand before writing any code.
 
-### `npm test`
+## PLanning
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+First, we will plan the structure of our application. Your application can look however you like, so feel free to style it in any way you see fit. The foundation, however, should follow this structure:
 
-### `npm run build`
+- App - Stores the score state variable
+  - MoleContainer
+This will be the component that decides which child component is rendered. We will store a Boolean state variable called displayMole here.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    - Mole
+This will represent a displayed mole. It ultimately will contain a timer determining the lifespan of a mole. This component will render when displayMole === true
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    - EmptySlot
+This will represent an empty molehill or an invalid location to click. Much like its sister component, it will have an internal timer to cycle the display. This component will render when displayMole === false
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+After deciding on the components, we must plan the type of functionality for each.
 
-### `npm run eject`
+- App
+  - A function to generate nine MoleContainers
+- MoleContainer
+  - A handleClick function that will increment the score by 1 and immediately set the clicked-on mole to no longer display (we will pass this down only to Mole components)
+  - A ternary that will determine which child to render
+- Mole and EmptySlot
+  - A useEffect hook that will start the timer and clean it up afterward
+Now that we have planned everything we need, it may be helpful to draw a diagram to represent the component structure. Identify where state variables are instantiated and compare that to where functions are locate
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Getting Started
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Take a moment to generate the component files needed for this application. Fill out each with basic boilerplate code and test rendering each component where it belongs to ensure your basic syntax is handled correctly.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Generating MoleContainers
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+In JSX, we typically do not have access to a traditional for loop to generate variables. However, if we want to generate a fixed number of components, a traditional for loop would be best. Luckily, there is a way around this behavior: We just describe a function that runs a typical for loop outside our JSX return.
 
-## Learn More
+- Declare a function called createMoleHill()
+- Inside this function, define an empty array. Perhaps call it hills
+- Build a basic for loop that iterates nine times. (You can choose any number. It is your game after all!) On each iteration, a MoleContainer component should be pushed to hills
+  - It may be worthwhile to send props to the MoleContainer
+  - Score and setScore could go down.
+  - A key with the value of i would also be best practice.
+- Outside the for loop, define a return value that formats the hills variable between div tags.
+- Next, simply call this function inside the app's return method.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Developing MoleContainer Behavior
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+We are ready to begin developing the behavior that will determine what renders within our MoleContainer
 
-### Code Splitting
+- We need to declare a state variable to determine the status of the mole in this container. Is the mole above ground and ready to be bopped or hiding within the mole hole? Define a state variable called displayMole and instantiate it to false
+- Next, define the function that will handle a mole being bopped. We want the function to iterate our score variable by 1 and set the mole display back to false.
+- Before our return value, define a variable called displayMole that will represent which component to render (the Mole or the EmptySlot), depending on whether displayMole is true.
+Hint: Remember to use the ternary here. Which values must be passed as props to the respective components?
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+  - If it is true, we should see a Mole component.
+  - If it is false, we should see the EmptySlot
+- Finally, within our return, reference displayMole
 
-### Analyzing the Bundle Size
+## useEffect and Building a Mole Timer
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+We are ready to give functionality to our EmptySlot and Mole components. Start with EmptySlot and then move onto Mole when you are finished.
 
-### Making a Progressive Web App
+- Declare a useEffect that takes a callback function, as we have done in the past.
+- Within the callback function, start by defining a random number of seconds. We want each mole to exist on its own random timer. Otherwise, our game would not be much fun.
+- Next, declare a variable called timer. This variable will be assigned to a setTimeout()
+- The setTimeout() callback should only toggle props.displayMole to true.
+- Important: Do not forget to define a cleanup for our useEffect using clearTimeout(timer)
+Once EmptySlot is built, Mole will be easy as well.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+- Complete the same steps as above but invert the toggle. The timer should handle setting displayMole back to false. We do not want moles just sitting around waiting to be bopped. They should go back into their holes after a certain amount of time.
+- Afterward, simply render the image of a Mole within a div and give it the onClick behavior of our handleClick property we built on the MoleContainer level. Hopefully, you remembered to ship that function down as a prop.
 
-### Advanced Configuration
+## Source
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Image
+[https://github.com/HackerUSA-CE/RR-React-A-Mole-Images]
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# react-rainbow
+Solution Code
+[https://github.com/HackerUSA-CE/RR-React-A-Mole/tree/main/src]# react-a-mole
