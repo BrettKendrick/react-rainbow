@@ -1,27 +1,40 @@
-import React, {useState} from "react";
-import ColorBlock from "./ColorBlock";
-import ColorForm from "./ColorForm";
+// CSS
+import './App.css';
+// useState from React
+import {useState} from 'react'
+// Components
+import MoleContainer from './components/MoleContainer'
 
 
-function App() {
-  const addColor = (newColor) => {
-    setColors([...colors, newColor])
-  }
-
-  let [colors,setColors] = useState(['violet','blue','lightblue','green','greenyellow', 'yellow', 'orange', 'red'])
-  let colorMap = colors.map((color,i) => {
-    return(
-      <ColorBlock color = {color} key = {i}/>
+const App = () => {
+  let [score, setScore] = useState(0)
+  // creating a for-loop for hills
+  const createMoleHill = () => {
+    let hills = []
+    // basic loop and call it 9 times
+    for (let i = 0; i < 9; i++) {
+      hills.push(
+        // Score setup and a key value of "i"
+        <MoleContainer key={i} setScore={setScore} score={score}/>
+      )
+    }
+    
+    return (
+      // to append hills inside a div
+      <div>
+        { hills }
+      </div>
     )
-  })
+  }
   return (
-    <div className='App'>
-      {colorMap}
-      <ColorForm addColor ={addColor}/>
+    <div className="App">
+      <h1>React a Mole</h1>
+    
+      {/* to return the method */}
+      {score}
+      {createMoleHill()}
     </div>
   );
 }
-
-
 
 export default App;
